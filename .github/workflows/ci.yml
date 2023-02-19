@@ -7,15 +7,15 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        python-version: [3.7, 3.8, '3.10']
+        python-version: [3.7, 3.8, '3.10', '3.11']
         include:
-          - python-version: 3.9
+          - python-version: 3.11
             test-type: lint
-          - python-version: 3.9
+          - python-version: 3.11
             test-type: docs
 
     steps:
@@ -62,7 +62,7 @@ jobs:
           mypy -p pdoc
           time coverage run -m unittest -v pdoc.test
           PDOC_TEST_PANDOC=1 time catchsegv python -m unittest -v pdoc.test.CliTest.test_pdf_pandoc
-          bash <(curl -s https://codecov.io/bash)
+          bash <(curl -s https://codecov.io/bash) || true
 
       - name: Test
         if: '! matrix.test-type'
